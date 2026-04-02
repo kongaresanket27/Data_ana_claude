@@ -1,0 +1,446 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);font-size:13px;color:var(--color-text-primary)}
+.dash{display:grid;gap:10px;padding:10px;background:var(--color-background-tertiary);min-height:100vh}
+.kpi-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.charts-row{display:grid;gap:10px}
+.row2{grid-template-columns:1fr 1fr 1fr}
+.row3{grid-template-columns:1fr 1fr}
+.row4{grid-template-columns:1fr 1fr 1fr}
+.row5{grid-template-columns:1fr 1fr}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:10px;padding:12px;cursor:pointer;transition:border-color .2s}
+.card:hover{border-color:var(--color-border-secondary)}
+.kpi{text-align:center;padding:14px 10px}
+.kpi .val{font-size:26px;font-weight:500;margin:4px 0}
+.kpi .lbl{font-size:11px;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:.5px}
+.kpi .sub{font-size:11px;color:var(--color-text-success);margin-top:2px}
+.chart-title{font-size:12px;font-weight:500;margin-bottom:8px;color:var(--color-text-primary)}
+.chart-sub{font-size:10px;color:var(--color-text-secondary);margin-bottom:10px}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;margin-left:6px}
+.badge-blue{background:var(--color-background-info);color:var(--color-text-info)}
+.badge-green{background:var(--color-background-success);color:var(--color-text-success)}
+.badge-amber{background:var(--color-background-warning);color:var(--color-text-warning)}
+svg text{font-family:var(--font-sans)}
+.tip{font-size:10px;color:var(--color-text-secondary);margin-top:6px;padding-top:6px;border-top:0.5px solid var(--color-border-tertiary)}
+.modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.45);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{background:var(--color-background-primary);border-radius:12px;border:0.5px solid var(--color-border-secondary);padding:20px;max-width:480px;width:90%;max-height:80vh;overflow-y:auto}
+.modal h3{font-size:15px;font-weight:500;margin-bottom:8px}
+.modal p{font-size:13px;color:var(--color-text-secondary);line-height:1.6;margin-bottom:8px}
+.modal .dax{background:var(--color-background-tertiary);border-radius:6px;padding:10px;font-family:var(--font-mono);font-size:11px;color:var(--color-text-primary);margin:8px 0;white-space:pre-wrap;line-height:1.5}
+.modal-close{float:right;cursor:pointer;font-size:18px;color:var(--color-text-secondary);border:none;background:none;line-height:1}
+.tag{display:inline-block;font-size:10px;padding:2px 8px;border-radius:12px;margin:3px 3px 3px 0;background:var(--color-background-secondary);color:var(--color-text-secondary);border:0.5px solid var(--color-border-tertiary)}
+</style>
+
+<div class="dash">
+
+<div class="kpi-row">
+  <div class="card kpi" onclick="openModal('total')">
+    <div class="lbl">Total students</div>
+    <div class="val" style="color:var(--color-text-info)">2,450</div>
+    <div class="sub">↑ 6 branches · 3 tiers</div>
+  </div>
+  <div class="card kpi" onclick="openModal('rate')">
+    <div class="lbl">Placement rate %</div>
+    <div class="val" style="color:var(--color-text-success)">68.4%</div>
+    <div class="sub">↑ CSE leads at 81%</div>
+  </div>
+  <div class="card kpi" onclick="openModal('cgpa')">
+    <div class="lbl">Average CGPA</div>
+    <div class="val" style="color:var(--color-text-warning)">7.62</div>
+    <div class="sub">Placed avg: 8.14</div>
+  </div>
+</div>
+
+<div class="charts-row row2">
+
+  <div class="card" onclick="openModal('v1')">
+    <div class="chart-title">1 · Branch-wise avg CGPA <span class="badge badge-blue">Donut</span></div>
+    <div class="chart-sub">Click a segment to drill into individual records</div>
+    <svg width="100%" viewBox="0 0 200 130">
+      <g transform="translate(65,65)">
+        <path d="M0,-52 A52,52,0,0,1,45,-27 L28,-17 A32,32,0,0,0,0,-32Z" fill="#3B8BD4"/>
+        <path d="M45,-27 A52,52,0,0,1,52,5 L32,3 A32,32,0,0,0,28,-17Z" fill="#1D9E75"/>
+        <path d="M52,5 A52,52,0,0,1,20,48 L12,30 A32,32,0,0,0,32,3Z" fill="#EF9F27"/>
+        <path d="M20,48 A52,52,0,0,1,-35,39 L-22,24 A32,32,0,0,0,12,30Z" fill="#D4537E"/>
+        <path d="M-35,39 A52,52,0,0,1,-52,-5 L-32,-3 A32,32,0,0,0,-22,24Z" fill="#534AB7"/>
+        <path d="M-52,-5 A52,52,0,0,1,0,-52 L0,-32 A32,32,0,0,0,-32,-3Z" fill="#D85A30"/>
+        <circle r="22" fill="var(--color-background-primary)"/>
+        <text x="0" y="-3" text-anchor="middle" font-size="9" font-weight="500" fill="var(--color-text-primary)">Avg</text>
+        <text x="0" y="8" text-anchor="middle" font-size="10" font-weight="500" fill="var(--color-text-primary)">7.62</text>
+      </g>
+      <g font-size="8.5" fill="var(--color-text-secondary)">
+        <rect x="130" y="12" width="8" height="8" fill="#3B8BD4" rx="2"/>
+        <text x="142" y="20">CSE 8.12</text>
+        <rect x="130" y="26" width="8" height="8" fill="#1D9E75" rx="2"/>
+        <text x="142" y="34">IT 7.88</text>
+        <rect x="130" y="40" width="8" height="8" fill="#EF9F27" rx="2"/>
+        <text x="142" y="48">ECE 7.65</text>
+        <rect x="130" y="54" width="8" height="8" fill="#D4537E" rx="2"/>
+        <text x="142" y="62">EEE 7.40</text>
+        <rect x="130" y="68" width="8" height="8" fill="#534AB7" rx="2"/>
+        <text x="142" y="76">Mech 7.18</text>
+        <rect x="130" y="82" width="8" height="8" fill="#D85A30" rx="2"/>
+        <text x="142" y="90">Civil 7.05</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: CSE students consistently show the highest CGPA, followed by IT.</div>
+  </div>
+
+  <div class="card" onclick="openModal('v2')">
+    <div class="chart-title">2 · Branch-wise placement status <span class="badge badge-green">Clustered bar</span></div>
+    <div class="chart-sub">Placed vs not placed per branch</div>
+    <svg width="100%" viewBox="0 0 230 130">
+      <g font-size="8" fill="var(--color-text-secondary)">
+        <text x="30" y="16">CSE</text>
+        <text x="30" y="36">IT</text>
+        <text x="30" y="56">ECE</text>
+        <text x="30" y="76">EEE</text>
+        <text x="30" y="96">Mech</text>
+        <text x="30" y="116">Civil</text>
+      </g>
+      <g>
+        <rect x="60" y="8" width="110" height="10" rx="2" fill="#3B8BD4"/>
+        <rect x="172" y="8" width="28" height="10" rx="2" fill="#D4537E" opacity=".7"/>
+        <rect x="60" y="28" width="90" height="10" rx="2" fill="#3B8BD4"/>
+        <rect x="152" y="28" width="38" height="10" rx="2" fill="#D4537E" opacity=".7"/>
+        <rect x="60" y="48" width="75" height="10" rx="2" fill="#3B8BD4"/>
+        <rect x="137" y="48" width="50" height="10" rx="2" fill="#D4537E" opacity=".7"/>
+        <rect x="60" y="68" width="65" height="10" rx="2" fill="#3B8BD4"/>
+        <rect x="127" y="68" width="55" height="10" rx="2" fill="#D4537E" opacity=".7"/>
+        <rect x="60" y="88" width="55" height="10" rx="2" fill="#3B8BD4"/>
+        <rect x="117" y="88" width="60" height="10" rx="2" fill="#D4537E" opacity=".7"/>
+        <rect x="60" y="108" width="48" height="10" rx="2" fill="#3B8BD4"/>
+        <rect x="110" y="108" width="62" height="10" rx="2" fill="#D4537E" opacity=".7"/>
+      </g>
+      <g font-size="7" fill="var(--color-text-primary)">
+        <text x="165" y="16">81%</text>
+        <text x="145" y="36">70%</text>
+        <text x="130" y="56">60%</text>
+        <text x="120" y="76">54%</text>
+        <text x="110" y="96">48%</text>
+        <text x="103" y="116">44%</text>
+      </g>
+      <g font-size="8" fill="var(--color-text-secondary)">
+        <rect x="60" y="122" width="7" height="7" fill="#3B8BD4" rx="1"/>
+        <text x="70" y="129">Placed</text>
+        <rect x="105" y="122" width="7" height="7" fill="#D4537E" opacity=".7" rx="1"/>
+        <text x="115" y="129">Not placed</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: CSE has 81% placement — nearly double Civil's rate.</div>
+  </div>
+
+  <div class="card" onclick="openModal('v3')">
+    <div class="chart-title">3 · Gender-wise placement <span class="badge badge-blue">Stacked column</span></div>
+    <div class="chart-sub">Male vs female placement comparison</div>
+    <svg width="100%" viewBox="0 0 160 130">
+      <g font-size="8" fill="var(--color-text-secondary)" text-anchor="middle">
+        <text x="55" y="126">Male</text>
+        <text x="105" y="126">Female</text>
+      </g>
+      <rect x="35" y="20" width="40" height="70" rx="3" fill="#3B8BD4"/>
+      <rect x="35" y="90" width="40" height="20" rx="3" fill="#D4537E" opacity=".7"/>
+      <rect x="85" y="28" width="40" height="62" rx="3" fill="#3B8BD4"/>
+      <rect x="85" y="90" width="40" height="20" rx="3" fill="#D4537E" opacity=".7"/>
+      <text x="55" y="60" text-anchor="middle" font-size="8" font-weight="500" fill="white">70%</text>
+      <text x="105" y="62" text-anchor="middle" font-size="8" font-weight="500" fill="white">65%</text>
+      <text x="55" y="102" text-anchor="middle" font-size="7" fill="white">30%</text>
+      <text x="105" y="102" text-anchor="middle" font-size="7" fill="white">35%</text>
+      <g font-size="8" fill="var(--color-text-secondary)">
+        <rect x="35" y="8" width="7" height="7" fill="#3B8BD4" rx="1"/>
+        <text x="45" y="15">Placed</text>
+        <rect x="80" y="8" width="7" height="7" fill="#D4537E" opacity=".7" rx="1"/>
+        <text x="90" y="15">Not placed</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: Males place at 70%, females at 65% — a modest 5-point gap.</div>
+  </div>
+
+</div>
+
+<div class="charts-row row3">
+
+  <div class="card" onclick="openModal('v4')">
+    <div class="chart-title">4 · Internships &amp; certifications by branch <span class="badge badge-amber">Clustered column</span></div>
+    <div class="chart-sub">Average count per student</div>
+    <svg width="100%" viewBox="0 0 280 130">
+      <line x1="40" y1="10" x2="40" y2="108" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <line x1="40" y1="108" x2="278" y2="108" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <g font-size="8" fill="var(--color-text-secondary)" text-anchor="middle">
+        <text x="67" y="120">CSE</text>
+        <text x="107" y="120">IT</text>
+        <text x="147" y="120">ECE</text>
+        <text x="187" y="120">EEE</text>
+        <text x="227" y="120">Mech</text>
+        <text x="267" y="120">Civil</text>
+      </g>
+      <g>
+        <rect x="50" y="48" width="14" height="60" rx="2" fill="#3B8BD4"/>
+        <rect x="65" y="38" width="14" height="70" rx="2" fill="#1D9E75" opacity=".8"/>
+        <rect x="90" y="58" width="14" height="50" rx="2" fill="#3B8BD4"/>
+        <rect x="105" y="48" width="14" height="60" rx="2" fill="#1D9E75" opacity=".8"/>
+        <rect x="130" y="68" width="14" height="40" rx="2" fill="#3B8BD4"/>
+        <rect x="145" y="63" width="14" height="45" rx="2" fill="#1D9E75" opacity=".8"/>
+        <rect x="170" y="73" width="14" height="35" rx="2" fill="#3B8BD4"/>
+        <rect x="185" y="73" width="14" height="35" rx="2" fill="#1D9E75" opacity=".8"/>
+        <rect x="210" y="78" width="14" height="30" rx="2" fill="#3B8BD4"/>
+        <rect x="225" y="83" width="14" height="25" rx="2" fill="#1D9E75" opacity=".8"/>
+        <rect x="250" y="83" width="14" height="25" rx="2" fill="#3B8BD4"/>
+        <rect x="265" y="88" width="14" height="20" rx="2" fill="#1D9E75" opacity=".8"/>
+      </g>
+      <g font-size="8" fill="var(--color-text-secondary)">
+        <rect x="40" y="4" width="7" height="7" fill="#3B8BD4" rx="1"/>
+        <text x="50" y="11">Internships</text>
+        <rect x="110" y="4" width="7" height="7" fill="#1D9E75" opacity=".8" rx="1"/>
+        <text x="120" y="11">Certifications</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: CSE &amp; IT students accumulate the most internships and certifications.</div>
+  </div>
+
+  <div class="card" onclick="openModal('v5')">
+    <div class="chart-title">5 · Placement by college tier <span class="badge badge-green">Pie</span></div>
+    <div class="chart-sub">Better as stacked 100% bar — see note below</div>
+    <svg width="100%" viewBox="0 0 200 130">
+      <g transform="translate(70,65)">
+        <path d="M0,-55 A55,55,0,0,1,47,-28 L30,-18 A35,35,0,0,0,0,-35Z" fill="#3B8BD4"/>
+        <path d="M47,-28 A55,55,0,0,1,0,55 L0,35 A35,35,0,0,0,30,-18Z" fill="#EF9F27"/>
+        <path d="M0,55 A55,55,0,0,1,-55,0 A55,55,0,0,1,0,-55 L0,-35 A35,35,0,0,0,-35,0 A35,35,0,0,0,0,35Z" fill="#D4537E"/>
+        <text x="0" y="3" text-anchor="middle" font-size="9" font-weight="500" fill="var(--color-text-primary)">Tier 1</text>
+      </g>
+      <g font-size="8.5" fill="var(--color-text-secondary)">
+        <rect x="130" y="30" width="8" height="8" fill="#3B8BD4" rx="2"/>
+        <text x="142" y="38">Tier 1: 85%</text>
+        <rect x="130" y="50" width="8" height="8" fill="#EF9F27" rx="2"/>
+        <text x="142" y="58">Tier 2: 65%</text>
+        <rect x="130" y="70" width="8" height="8" fill="#D4537E" rx="2"/>
+        <text x="142" y="78">Tier 3: 42%</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: Tier 1 students are twice as likely to be placed as Tier 3.</div>
+  </div>
+
+</div>
+
+<div class="charts-row row3">
+
+  <div class="card" onclick="openModal('v6')">
+    <div class="chart-title">6 · Coding skill vs CGPA <span class="badge badge-blue">Scatter plot</span></div>
+    <div class="chart-sub">Color-coded by placement status</div>
+    <svg width="100%" viewBox="0 0 220 130">
+      <line x1="30" y1="10" x2="30" y2="108" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <line x1="30" y1="108" x2="218" y2="108" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <text x="14" y="14" font-size="7" fill="var(--color-text-secondary)">10</text>
+      <text x="14" y="60" font-size="7" fill="var(--color-text-secondary)">7.5</text>
+      <text x="14" y="108" font-size="7" fill="var(--color-text-secondary)">5</text>
+      <text x="38" y="118" font-size="7" fill="var(--color-text-secondary)">0</text>
+      <text x="120" y="118" font-size="7" fill="var(--color-text-secondary)">50</text>
+      <text x="200" y="118" font-size="7" fill="var(--color-text-secondary)">100</text>
+      <g opacity=".7">
+        <circle cx="45" cy="90" r="3" fill="#D4537E"/>
+        <circle cx="55" cy="80" r="3" fill="#D4537E"/>
+        <circle cx="70" cy="82" r="3" fill="#3B8BD4"/>
+        <circle cx="80" cy="60" r="3" fill="#3B8BD4"/>
+        <circle cx="90" cy="70" r="3" fill="#D4537E"/>
+        <circle cx="100" cy="55" r="3" fill="#3B8BD4"/>
+        <circle cx="115" cy="45" r="3" fill="#3B8BD4"/>
+        <circle cx="120" cy="62" r="3" fill="#D4537E"/>
+        <circle cx="135" cy="40" r="3" fill="#3B8BD4"/>
+        <circle cx="145" cy="30" r="3" fill="#3B8BD4"/>
+        <circle cx="155" cy="48" r="3" fill="#3B8BD4"/>
+        <circle cx="165" cy="35" r="3" fill="#3B8BD4"/>
+        <circle cx="175" cy="25" r="3" fill="#3B8BD4"/>
+        <circle cx="185" cy="38" r="3" fill="#D4537E"/>
+        <circle cx="195" cy="22" r="3" fill="#3B8BD4"/>
+        <circle cx="60" cy="98" r="3" fill="#D4537E"/>
+        <circle cx="75" cy="95" r="3" fill="#D4537E"/>
+        <circle cx="88" cy="85" r="3" fill="#D4537E"/>
+      </g>
+      <line x1="40" y1="100" x2="200" y2="18" stroke="#3B8BD4" stroke-width="0.8" stroke-dasharray="4 2" opacity=".5"/>
+      <g font-size="7" fill="var(--color-text-secondary)">
+        <circle cx="42" cy="7" r="3" fill="#3B8BD4"/>
+        <text x="48" y="10">Placed</text>
+        <circle cx="80" cy="7" r="3" fill="#D4537E"/>
+        <text x="86" y="10">Not placed</text>
+      </g>
+      <text x="15" y="65" font-size="7" fill="var(--color-text-secondary)" transform="rotate(-90,15,65)">CGPA</text>
+      <text x="120" y="128" font-size="7" fill="var(--color-text-secondary)" text-anchor="middle">Coding skill score</text>
+    </svg>
+    <div class="tip">Insight: Strong positive correlation — higher coding scores cluster with higher CGPA and placement.</div>
+  </div>
+
+  <div class="card" onclick="openModal('v7')">
+    <div class="chart-title">7 · CGPA vs placement status <span class="badge badge-green">Box plot recommended</span></div>
+    <div class="chart-sub">Distribution of CGPA for placed vs not placed</div>
+    <svg width="100%" viewBox="0 0 180 130">
+      <line x1="30" y1="10" x2="30" y2="105" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <line x1="30" y1="105" x2="178" y2="105" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <g font-size="8" fill="var(--color-text-secondary)" text-anchor="middle">
+        <text x="30" y="118">6</text>
+        <text x="78" y="118">7.5</text>
+        <text x="135" y="118">9</text>
+        <text x="10" y="35">Placed</text>
+        <text x="10" y="80">Not</text>
+        <text x="10" y="90">placed</text>
+      </g>
+      <rect x="55" y="22" width="100" height="20" rx="2" fill="#3B8BD4" opacity=".2" stroke="#3B8BD4" stroke-width="0.8"/>
+      <line x1="100" y1="22" x2="100" y2="42" stroke="#3B8BD4" stroke-width="1.5"/>
+      <line x1="40" y1="32" x2="55" y2="32" stroke="#3B8BD4" stroke-width="1"/>
+      <line x1="155" y1="32" x2="170" y2="32" stroke="#3B8BD4" stroke-width="1"/>
+      <rect x="40" y="67" width="78" height="20" rx="2" fill="#D4537E" opacity=".2" stroke="#D4537E" stroke-width="0.8"/>
+      <line x1="72" y1="67" x2="72" y2="87" stroke="#D4537E" stroke-width="1.5"/>
+      <line x1="30" y1="77" x2="40" y2="77" stroke="#D4537E" stroke-width="1"/>
+      <line x1="118" y1="77" x2="130" y2="77" stroke="#D4537E" stroke-width="1"/>
+      <text x="101" y="36" font-size="8" font-weight="500" fill="#0C447C">8.14</text>
+      <text x="73" y="81" font-size="8" font-weight="500" fill="#99355A">6.88</text>
+    </svg>
+    <div class="tip">Insight: Placed students have a median CGPA of 8.14 vs 6.88 for non-placed — a significant gap.</div>
+  </div>
+
+</div>
+
+<div class="charts-row row4">
+
+  <div class="card" onclick="openModal('v8')">
+    <div class="chart-title">8 · Projects &amp; hackathons by branch <span class="badge badge-blue">Bar</span></div>
+    <div class="chart-sub">Avg per student</div>
+    <svg width="100%" viewBox="0 0 200 130">
+      <line x1="40" y1="108" x2="198" y2="108" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <g font-size="7.5" fill="var(--color-text-secondary)" text-anchor="middle">
+        <text x="62" y="120">CSE</text>
+        <text x="94" y="120">IT</text>
+        <text x="126" y="120">ECE</text>
+        <text x="158" y="120">EEE</text>
+        <text x="190" y="120">Mech</text>
+      </g>
+      <g>
+        <rect x="47" y="38" width="12" height="70" rx="2" fill="#534AB7"/>
+        <rect x="60" y="52" width="12" height="56" rx="2" fill="#D4537E" opacity=".8"/>
+        <rect x="79" y="48" width="12" height="60" rx="2" fill="#534AB7"/>
+        <rect x="92" y="62" width="12" height="46" rx="2" fill="#D4537E" opacity=".8"/>
+        <rect x="111" y="58" width="12" height="50" rx="2" fill="#534AB7"/>
+        <rect x="124" y="68" width="12" height="40" rx="2" fill="#D4537E" opacity=".8"/>
+        <rect x="143" y="68" width="12" height="40" rx="2" fill="#534AB7"/>
+        <rect x="156" y="78" width="12" height="30" rx="2" fill="#D4537E" opacity=".8"/>
+        <rect x="175" y="78" width="12" height="30" rx="2" fill="#534AB7"/>
+        <rect x="188" y="88" width="12" height="20" rx="2" fill="#D4537E" opacity=".8"/>
+      </g>
+      <g font-size="7" fill="var(--color-text-secondary)">
+        <rect x="40" y="5" width="7" height="7" fill="#534AB7" rx="1"/>
+        <text x="50" y="12">Projects</text>
+        <rect x="95" y="5" width="7" height="7" fill="#D4537E" opacity=".8" rx="1"/>
+        <text x="105" y="12">Hackathons</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: CSE students lead in both project work and hackathon participation.</div>
+  </div>
+
+  <div class="card" onclick="openModal('v9')">
+    <div class="chart-title">9 · Backlogs by branch &amp; gender <span class="badge badge-amber">Clustered bar</span></div>
+    <div class="chart-sub">Students with any backlog</div>
+    <svg width="100%" viewBox="0 0 200 130">
+      <line x1="40" y1="108" x2="198" y2="108" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <g font-size="7.5" fill="var(--color-text-secondary)" text-anchor="middle">
+        <text x="62" y="120">CSE</text>
+        <text x="94" y="120">IT</text>
+        <text x="126" y="120">ECE</text>
+        <text x="158" y="120">EEE</text>
+        <text x="190" y="120">Mech</text>
+      </g>
+      <g>
+        <rect x="47" y="78" width="12" height="30" rx="2" fill="#3B8BD4"/>
+        <rect x="60" y="82" width="12" height="26" rx="2" fill="#D85A30" opacity=".8"/>
+        <rect x="79" y="72" width="12" height="36" rx="2" fill="#3B8BD4"/>
+        <rect x="92" y="76" width="12" height="32" rx="2" fill="#D85A30" opacity=".8"/>
+        <rect x="111" y="60" width="12" height="48" rx="2" fill="#3B8BD4"/>
+        <rect x="124" y="65" width="12" height="43" rx="2" fill="#D85A30" opacity=".8"/>
+        <rect x="143" y="55" width="12" height="53" rx="2" fill="#3B8BD4"/>
+        <rect x="156" y="58" width="12" height="50" rx="2" fill="#D85A30" opacity=".8"/>
+        <rect x="175" y="50" width="12" height="58" rx="2" fill="#3B8BD4"/>
+        <rect x="188" y="55" width="12" height="53" rx="2" fill="#D85A30" opacity=".8"/>
+      </g>
+      <g font-size="7" fill="var(--color-text-secondary)">
+        <rect x="40" y="5" width="7" height="7" fill="#3B8BD4" rx="1"/>
+        <text x="50" y="12">Male</text>
+        <rect x="80" y="5" width="7" height="7" fill="#D85A30" opacity=".8" rx="1"/>
+        <text x="90" y="12">Female</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: Backlogs are highest in Mechanical and Civil — correlated with lower placement rates.</div>
+  </div>
+
+  <div class="card" onclick="openModal('v10')">
+    <div class="chart-title">10 · Salary by branch &amp; college tier <span class="badge badge-green">Clustered column</span></div>
+    <div class="chart-sub">Avg LPA per group</div>
+    <svg width="100%" viewBox="0 0 200 130">
+      <line x1="30" y1="108" x2="198" y2="108" stroke="var(--color-border-tertiary)" stroke-width="0.5"/>
+      <g font-size="7.5" fill="var(--color-text-secondary)" text-anchor="middle">
+        <text x="57" y="120">CSE</text>
+        <text x="98" y="120">IT</text>
+        <text x="139" y="120">ECE</text>
+        <text x="178" y="120">EEE</text>
+      </g>
+      <g>
+        <rect x="34" y="28" width="11" height="80" rx="2" fill="#3B8BD4"/>
+        <rect x="46" y="48" width="11" height="60" rx="2" fill="#EF9F27"/>
+        <rect x="58" y="68" width="11" height="40" rx="2" fill="#D85A30"/>
+        <rect x="75" y="38" width="11" height="70" rx="2" fill="#3B8BD4"/>
+        <rect x="87" y="55" width="11" height="53" rx="2" fill="#EF9F27"/>
+        <rect x="99" y="73" width="11" height="35" rx="2" fill="#D85A30"/>
+        <rect x="116" y="50" width="11" height="58" rx="2" fill="#3B8BD4"/>
+        <rect x="128" y="63" width="11" height="45" rx="2" fill="#EF9F27"/>
+        <rect x="140" y="80" width="11" height="28" rx="2" fill="#D85A30"/>
+        <rect x="157" y="58" width="11" height="50" rx="2" fill="#3B8BD4"/>
+        <rect x="169" y="70" width="11" height="38" rx="2" fill="#EF9F27"/>
+        <rect x="181" y="83" width="11" height="25" rx="2" fill="#D85A30"/>
+      </g>
+      <g font-size="7" fill="var(--color-text-secondary)">
+        <rect x="30" y="5" width="6" height="6" fill="#3B8BD4" rx="1"/><text x="39" y="11">Tier 1</text>
+        <rect x="72" y="5" width="6" height="6" fill="#EF9F27" rx="1"/><text x="81" y="11">Tier 2</text>
+        <rect x="112" y="5" width="6" height="6" fill="#D85A30" rx="1"/><text x="121" y="11">Tier 3</text>
+      </g>
+    </svg>
+    <div class="tip">Insight: CSE from Tier 1 commands the highest salary — up to 2.5× Tier 3 peers.</div>
+  </div>
+
+</div>
+
+</div>
+
+<div id="modal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
+<div class="modal" id="modal-content"></div>
+</div>
+
+<script>
+const data={
+  total:{title:"Total students — DAX measure",body:"Counts every row in the student table. Place this on a card visual in the report header for a quick snapshot.",dax:`Total Students = \nCOUNTROWS(Students)`,insight:"",tags:[]},
+  rate:{title:"Placement rate % — DAX measure",body:"Calculates the percentage of placed students out of all students. Use a conditional column where Placement_Status = 'Placed' first, then reference it here.",dax:`Placement Rate % = \nDIVIDE(\n  COUNTROWS(\n    FILTER(Students,\n      Students[placement_status] = \"Placed\")\n  ),\n  [Total Students],\n  0\n) * 100`,insight:"Filter slicers on Branch, Tier, or Gender to dynamically recalculate this KPI.",tags:["KPI","Filter-aware"]},
+  cgpa:{title:"Average CGPA — DAX measure",body:"Simple average of the CGPA column. Pair with a second measure filtered to 'Placed' students only to compare the two side by side.",dax:`Avg CGPA = \nAVERAGE(Students[cgpa])\n\nAvg CGPA Placed = \nCALCULATE(\n  AVERAGE(Students[cgpa]),\n  Students[placement_status] = \"Placed\"\n)`,insight:"A placed vs unplaced CGPA comparison on one card visual is very effective.",tags:["KPI","Calculated measure"]},
+  v1:{title:"Visual 1 — Branch-wise avg CGPA",body:"A donut chart is a good choice here. It communicates relative CGPA across branches at a glance. Consider switching to a horizontal bar chart if the CGPA values are close together — bars make small differences easier to read.",dax:`Branch Avg CGPA = \nAVERAGEX(\n  VALUES(Students[branch]),\n  [Avg CGPA]\n)`,insight:"Add a branch slicer so users can click a branch and see all other visuals filter.",tags:["Donut or bar","Branch dimension"]},
+  v2:{title:"Visual 2 — Branch-wise placement status",body:"A clustered horizontal bar chart is perfect here. X-axis: count of students, Y-axis: branch, color: placement status. Turn on data labels to show placement percentages directly on bars.",dax:`Placed Count = \nCALCULATE(\n  [Total Students],\n  Students[placement_status]=\"Placed\"\n)\n\nNot Placed Count = \n[Total Students] - [Placed Count]`,insight:"Sort bars descending by Placed Count to quickly rank branches.",tags:["Clustered bar","Branch × Status"]},
+  v3:{title:"Visual 3 — Gender-wise placement",body:"A stacked column chart with Gender on the X-axis and Placement Status as the stack works well. Consider adding a 100% stacked version to emphasise proportions rather than absolute counts.",dax:`Gender Placement % = \nDIVIDE(\n  CALCULATE(\n    [Total Students],\n    Students[placement_status]=\"Placed\"\n  ),\n  [Total Students],\n  0\n) * 100`,insight:"If the dataset is unbalanced in gender, use the 100% stacked variant.",tags:["Stacked column","Gender dimension"]},
+  v4:{title:"Visual 4 — Internships & certifications by branch",body:"A clustered column chart with branch on X-axis and two clusters (avg internships, avg certifications) is ideal. You can also try a combo chart — bars for internships, a line for certifications.",dax:`Avg Internships = \nAVERAGE(Students[internships_count])\n\nAvg Certifications = \nAVERAGE(Students[certifications_count])`,insight:"Students with 2+ internships have significantly higher placement rates.",tags:["Clustered column","Effort metrics"]},
+  v5:{title:"Visual 5 — Placement by college tier",body:"A pie chart is okay for 3 tiers, but a 100% stacked bar chart (Tier on X, Placed/Not stacked) gives more accurate comparison. Pies are hard to read when slices are similar sizes.",dax:`Tier Placement Rate = \nCALCULATE(\n  [Placement Rate %],\n  ALLEXCEPT(\n    Students,\n    Students[college_tier]\n  )\n)`,insight:"Recommendation: replace the pie with a 100% stacked column — easier to compare 3 tiers.",tags:["Pie → Stacked bar","College tier"]},
+  v6:{title:"Visual 6 — Coding skill vs CGPA scatter",body:"Power BI's scatter chart handles this well. Set X = coding_skill_score, Y = CGPA, color = placement_status, and enable the Play Axis to animate over college tiers if desired.",dax:`-- No special measure needed.\n-- Use built-in scatter with:\n-- X: Avg of coding_skill_score\n-- Y: Avg of cgpa\n-- Legend: placement_status\n-- Size: Count of student_id`,insight:"A strong upward trend confirms that coding skill is one of the best predictors of placement.",tags:["Scatter","Correlation analysis"]},
+  v7:{title:"Visual 7 — CGPA vs placement status",body:"Instead of a basic column chart, use a box-and-whisker plot (Power BI custom visual: 'Box and Whisker Chart' by MAQ). It shows median, IQR, and outliers — far more informative than just average bars.",dax:`Median CGPA Placed = \nCALCULATEX(\n  VALUES(Students[student_id]),\n  Students[cgpa],\n  Students[placement_status]=\"Placed\"\n)`,insight:"Recommendation: upgrade to box-and-whisker to show spread, not just mean.",tags:["Box plot recommended","CGPA distribution"]},
+  v8:{title:"Visual 8 — Projects & hackathons by branch",body:"A grouped bar chart with branch on Y-axis and two bars per group (projects, hackathons) works well. Color the two metric bars with distinct hues and add data labels.",dax:`Avg Projects = \nAVERAGE(Students[projects_count])\n\nAvg Hackathons = \nAVERAGE(Students[hackathons_participated])`,insight:"Hackathon participation is lower overall but highly correlated with placement.",tags:["Grouped bar","Extracurricular metrics"]},
+  v9:{title:"Visual 9 — Backlogs by branch & gender",body:"A clustered bar with gender as the color cluster and branch on Y-axis is the right call. Add a conditional formatting rule: bars above a threshold turn red.",dax:`Backlog Count = \nCALCULATE(\n  [Total Students],\n  Students[backlogs] > 0\n)\n\nBacklog Rate % = \nDIVIDE(\n  [Backlog Count],\n  [Total Students],\n  0\n) * 100`,insight:"High backlog rate in Mechanical and Civil directly correlates with low placement.",tags:["Clustered bar","Risk indicator"]},
+  v10:{title:"Visual 10 — Salary by branch & college tier",body:"A clustered column chart with branch on X-axis and college tier as the color cluster. Add a reference line for the average salary across all students so viewers can see who is above/below average.",dax:`Avg Salary LPA = \nAVERAGE(Students[salary_package_lpa])\n\nAvg Salary Placed = \nCALCULATE(\n  AVERAGE(Students[salary_package_lpa]),\n  Students[placement_status]=\"Placed\"\n)`,insight:"Tier 1 CSE commands a premium of 2–3× over Tier 3 in the same branch.",tags:["Clustered column","Salary benchmarking"]}
+};
+
+function openModal(key){
+  const d=data[key];
+  document.getElementById('modal-content').innerHTML=`
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <h3>${d.title}</h3>
+    ${d.body?`<p>${d.body}</p>`:''}
+    ${d.dax?`<div class="dax">${d.dax}</div>`:''}
+    ${d.insight?`<p><strong>Tip:</strong> ${d.insight}</p>`:''}
+    ${d.tags&&d.tags.length?`<div>${d.tags.map(t=>`<span class="tag">${t}</span>`).join('')}</div>`:''}
+  `;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open')}
+</script>
